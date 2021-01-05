@@ -1,0 +1,6 @@
+numpy
+matplotlib
+xarray
+pandas
+requests
+projmap >= 0.87
