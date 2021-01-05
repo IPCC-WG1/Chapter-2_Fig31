@@ -12,6 +12,8 @@ import requests
 import projmap
 import trend_analysis
 
+Path("figs").mkdir(parents=True, exist_ok=True)
+
 def filename(dtm, ver="4.2", datadir=None):
     """Generate OC-CCI filenames based on datetime object"""
     if datadir is None:
@@ -74,7 +76,7 @@ def process(j1=None, j2=None, ver="4.2", year1=1998):
         print("load")
         ds = load(i1=ipos, i2=ipos+1080, j1=j1, j2=j2, year1=year1, ver=ver)
         ds = trend_analysis.add_trends(ds, fieldname="chlor_a")
-        fname = (f"OC-CCI_{year1}_2018_v{verstr}" + 
+        fname = (f"ncfiles/OC-CCI_{year1}_2018_v{verstr}" + 
                  f"_{j1:04}_{j2:04}_{ipos:04}_{ipos+1080:04}.nc")
         ds.to_netcdf(fname)
 
@@ -91,7 +93,7 @@ def plot_trend(ds):
 def plot_chl_trend(ds=None,year1=1998, ver="4.2"):
     verstr = str(ver.replace(".",""))
     if ds is None:
-        ds = xr.open_mfdataset("OC-CCI_1998_2018_v42_0000_4320_*")
+        ds = xr.open_mfdataset("ncfiles/OC-CCI_1998_2018_v42_0000_4320_*")
     trend = (100 * (ds.slope*12) / (ds.climatology+ds.intercept)).data
     trend[ds.pvalue.data>0.05] = np.nan
     ds["trend"] = (("lat", "lon"), trend)
@@ -104,7 +106,7 @@ def plot_chl_trend(ds=None,year1=1998, ver="4.2"):
 def plot_clim(ds=None, ver="4.2"):
     verstr = str(ver.replace(".",""))
     if ds is None:
-        ds = xr.open_mfdataset("OC-CCI_1998_2018_v42_0000_4320_*")
+        ds = xr.open_mfdataset("ncfiles/OC-CCI_1998_2018_v42_0000_4320_*")
     mp = projmap.Map("glob")
     mp.style["landface"]="0.6"
     mp.style["oceancolor"]="0.8"

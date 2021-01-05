@@ -2,10 +2,11 @@
 These scripts download, process, and plot trend data of the version 4.2 OC-CCI L4 satellite derived Chlorophyll product.
 
 ## Installation
-All code is written in python 3.7+ and mainly uses commonly available packages. It is probably a good idea to run the package in a virtual environment. Install prerequsite packages using
+All code is written in python 3.7+ and mainly uses commonly available packages. The plotting functions are based on cartopy which can be a bit difficult to install, it therefore advisabel to use the [conda](https://docs.conda.io/en/latest/miniconda.html]) package manager:
 
 ```
-pip install -r requirements.txt
+conda env create -f environment.yml
+conda activate ipcc
 ```
 
 ## Run the code
