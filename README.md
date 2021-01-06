@@ -1,8 +1,8 @@
 # Trend plots of Ocean Color for the IPCC report
-Code to generate trend plots of Chl concentrations based on the v4.2 OC-CCI L4 satellite derived Chlorophyll product. Downloading and processing the data require about 70GB of disk space and prefarbly a machine with 32GB RAM. The code is parallelized and will utilize multicore architectures. 
+Code to generate trend plots of Chl concentrations based on the v4.2 OC-CCI L4 satellite derived Chlorophyll product. Downloading and processing the data require about 70GB of disk space and preferably a machine with 32GB RAM. The code is parallelized and will utilize multicore architectures. 
 
 ## Installation
-All code is written in python 3.7+ and mainly uses commonly available packages. The plotting functions are based on cartopy which can be a bit difficult to install, it therefore advisabel to use the [conda](https://docs.conda.io/en/latest/miniconda.html]) package manager:
+All code is written in python 3.7+ and mainly uses commonly available packages. The plotting functions are based on cartopy which can be a bit difficult to install, it therefore advisable to use the [conda](https://docs.conda.io/en/latest/miniconda.html]) package manager:
 
 ```
 conda env create -f environment.yml
