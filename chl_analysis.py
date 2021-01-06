@@ -66,18 +66,23 @@ def load(i1=None,i2=None, j1=None,j2=None, ver="4.2", year1=1998,year2=2018):
     ds["chl"] = ds["chlor_a"]
     return ds.isel(lon=slice(i1, i2), lat=slice(j1, j2)) 
 
-def process(j1=None, j2=None, ver="4.2", year1=1998):
+def process(j1=None, j2=None, ver="4.2", islice=540, year1=1998):
     """Calculate climatologies and linear trends and save to netcdf file"""
     j1 =    0 if j1 is None else j1
     j2 = 4320 if j2 is None else j2
     verstr = str(ver.replace(".",""))
-    for ipos in range(0, 8640, 1080):
+    for ipos in range(0, 8640, islice):
         print (ipos)
         print("load")
-        ds = load(i1=ipos, i2=ipos+1080, j1=j1, j2=j2, year1=year1, ver=ver)
+        ds = load(i1=ipos, i2=ipos+islice, j1=j1, j2=j2, year1=year1, ver=ver)
         ds = trend_analysis.add_trends(ds, fieldname="chlor_a")
         fname = (f"ncfiles/OC-CCI_{year1}_2018_v{verstr}" + 
                  f"_{j1:04}_{j2:04}_{ipos:04}_{ipos+1080:04}.nc")
+        ds = ds.drop_vars(["MERIS_nobs_sum", "MODISA_nobs_sum",
+                           "SeaWiFS_nobs_sum", "chlor_a_log10_bias",
+                           "chlor_a_log10_rmsd", "total_nobs_sum",
+                           "VIIRS_nobs_sum", "crs", "chlor_a", "deseas",
+                           "chl"])  
         ds.to_netcdf(fname)
 
 def plot_trend(ds):

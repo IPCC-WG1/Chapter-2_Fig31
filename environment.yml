@@ -1,15 +1,17 @@
-name: ipcc
+name: ipcc_test
 channels:
   - defaults
 dependencies:
   - python=3.7.0
-  - matplotlib=3.3.2=hecd8cb5_0
-  - numpy=1.19.2=py37h456fd55_0
-  - pip=20.3.3=py37hecd8cb5_0
-  - requests=2.25.1=pyhd3eb1b0_0
-  - scipy=1.5.2=py37h912ce22_0
-  - cartopy=0.18.0=py37hc4b8d57_0
-  - pandas=1.1.5=py37hb2f4e1b_0
-  - xarray=0.16.2=pyhd3eb1b0_0
-  - pip:
+  - matplotlib=3.3.2
+  - numpy=1.19.2
+  - pip=20.3
+  - requests=2.25.1
+  - scipy=1.5.2
+  - cartopy=0.18.0
+  - pandas=1.1.5
+  - xarray=0.16.2
+  - dask=2020.12.0
+  - netcdf4=1.4.1
+- pip:
     - projmap==0.87
