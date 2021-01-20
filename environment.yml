@@ -1,4 +1,4 @@
-name: ipcc_test
+name: ipcc_plots
 channels:
   - defaults
 dependencies:
@@ -13,5 +13,5 @@ dependencies:
   - xarray=0.16.2
   - dask=2020.12.0
   - netcdf4=1.4.1
-- pip:
+  - pip:
     - projmap==0.87

@@ -8,6 +8,7 @@ import xarray as xr
 from matplotlib import cm
 from matplotlib.colors import LogNorm
 import requests
+import matplotlib as mpl
 
 import projmap
 import trend_analysis
@@ -94,19 +95,49 @@ def plot_trend(ds):
     mp.pcolor(ds.lon, ds.lat, ds.trend, vmin=-5, vmax=5, cmap=cm.RdBu_r,
               colorbar=True, rasterized=True)
     mp._cb.set_label("Percent change yr$^{-1}$")
+    return mp
 
 def plot_chl_trend(ds=None,year1=1998, ver="4.2"):
     verstr = str(ver.replace(".",""))
     if ds is None:
         ds = xr.open_mfdataset("ncfiles/OC-CCI_1998_2018_v42_0000_4320_*")
     trend = (100 * (ds.slope*12) / (ds.climatology+ds.intercept)).data
-    trend[ds.pvalue.data>0.05] = np.nan
+    mask = ds.pvalue.data > 0.05
+    trend[mask] = np.nan
     ds["trend"] = (("lat", "lon"), trend)
     plot_trend(ds)
     sf_kw = dict(dpi=600, bbox_inches="tight")
     for ftype in ["png", "pdf", "eps", "svg"]:
         pl.savefig(
             f"figs/OC-CCI_Chl_trend_v{verstr}_{year1}-2018.{ftype}", **sf_kw)
+
+def plot_hatched_chl_trend(ds=None,year1=1998, ver="4.2"):
+    verstr = str(ver.replace(".",""))
+    if ds is None:
+        ds = xr.open_mfdataset("ncfiles/OC-CCI_1998_2018_v42_0000_4320_*")
+    trend = (100 * (ds.slope*12) / (ds.climatology+ds.intercept)).data
+    mask = ds.pvalue.data > 0.05
+    hatchmask = np.zeros(trend.shape)
+    hatchmask[mask==0] = np.nan
+    #trend[mask] = np.nan
+    ds["trend"] = (("lat", "lon"), trend)
+
+    mpl.rcParams['hatch.linewidth'] = 0.2
+    pl.close("all")
+    pl.figure(1, (11,8))
+    pl.gca().set_facecolor("0.5")
+    mp = plot_trend(ds)
+    #pl.pcolormesh(trend, vmin=-5, vmax=5, cmap=cm.RdBu_r, rasterized=True)
+    mp.contourf(hatchmask, hatches=["XXXXX"], colors="none")
+    pl.savefig("test.pdf", dpi=600)
+    return
+
+    sf_kw = dict(dpi=600, bbox_inches="tight")
+    return
+    for ftype in ["png", "pdf", "eps", "svg"]:
+        pl.savefig(
+            f"figs/OC-CCI_Chl_trend_v{verstr}_{year1}-2018.{ftype}", **sf_kw)
+
 
 def plot_clim(ds=None, ver="4.2"):
     verstr = str(ver.replace(".",""))
