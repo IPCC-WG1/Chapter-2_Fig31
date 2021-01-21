@@ -26,6 +26,6 @@ The parallelized setup is based on a machine with at least 32GB RAM. Change the 
 Generate the figures with:
 
 ```
->>> chl_analysis.plot_clim()
->>> chl_analysis.plot_chl_trend()
+>>> chl_analysis.plot_chl_clim()
+>>> chl_analysis.plot_hatched_chl_trend()
 ```

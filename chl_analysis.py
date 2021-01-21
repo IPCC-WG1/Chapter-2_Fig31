@@ -94,7 +94,8 @@ def plot_trend(ds):
     mp.nice(borders=False)
     mp.pcolor(ds.lon, ds.lat, ds.trend, vmin=-5, vmax=5, cmap=cm.RdBu_r,
               colorbar=True, rasterized=True)
-    mp._cb.set_label("Percent change yr$^{-1}$")
+    mp._cb.ax.tick_params(labelsize=16)
+    mp._cb.set_label("Percent change yr$^{-1}$", size=16)
     return mp
 
 def plot_chl_trend(ds=None,year1=1998, ver="4.2"):
@@ -125,34 +126,31 @@ def plot_hatched_chl_trend(ds=None,year1=1998, ver="4.2"):
     mpl.rcParams['hatch.linewidth'] = 0.2
     pl.close("all")
     pl.figure(1, (11,8))
-    pl.gca().set_facecolor("0.5")
     mp = plot_trend(ds)
-    #pl.pcolormesh(trend, vmin=-5, vmax=5, cmap=cm.RdBu_r, rasterized=True)
-    mp.contourf(hatchmask, hatches=["XXXXX"], colors="none")
-    pl.savefig("test.pdf", dpi=600)
-    return
-
-    sf_kw = dict(dpi=600, bbox_inches="tight")
-    return
+    mp.contourf(ds.lon[4::8], ds.lat[4::8], hatchmask[4::8,4::8], 
+                hatches=["XXXXXX"], colors="none")
+    sf_kw = dict(dpi=600)#, bbox_inches="tight")
     for ftype in ["png", "pdf", "eps", "svg"]:
         pl.savefig(
             f"figs/OC-CCI_Chl_trend_v{verstr}_{year1}-2018.{ftype}", **sf_kw)
 
 
-def plot_clim(ds=None, ver="4.2"):
+def plot_chl_clim(ds=None, ver="4.2"):
     verstr = str(ver.replace(".",""))
     if ds is None:
         ds = xr.open_mfdataset("ncfiles/OC-CCI_1998_2018_v42_0000_4320_*")
     mp = projmap.Map("glob")
     mp.style["landface"]="0.6"
     mp.style["oceancolor"]="0.8"
-    sf_kw = dict(dpi=600, bbox_inches="tight")
+    sf_kw = dict(dpi=600)#, bbox_inches="tight")
 
     def create_map(cmap):
-        pl.clf()
+        pl.close("all")
+        pl.figure(1, (11,8))
         mp.pcolor(ds.lon, ds.lat, ds.climatology, norm=LogNorm(vmin=0.01,vmax=10), 
                   cmap=getattr(cm, cmap), colorbar=True, rasterized=True)
-        mp._cb.set_label("mg Chl m$^{-3}$")
+        mp._cb.set_label("mg Chl m$^{-3}$", size=16)
+        mp._cb.ax.tick_params(labelsize=16)
         mp.nice(borders=False)
         for ftype in ["png", "pdf", "eps", "svg"]:
             pl.savefig(
