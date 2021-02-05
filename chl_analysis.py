@@ -112,12 +112,12 @@ def plot_chl_trend(ds=None,year1=1998, ver="4.2"):
         pl.savefig(
             f"figs/OC-CCI_Chl_trend_v{verstr}_{year1}-2018.{ftype}", **sf_kw)
 
-def plot_hatched_chl_trend(ds=None,year1=1998, ver="4.2"):
+def plot_hatched_chl_trend(ds=None,year1=1998, ver="4.2", pcut=0.1):
     verstr = str(ver.replace(".",""))
     if ds is None:
         ds = xr.open_mfdataset("ncfiles/OC-CCI_1998_2018_v42_0000_4320_*")
     trend = (100 * (ds.slope*12) / (ds.climatology+ds.intercept)).data
-    mask = ds.pvalue.data > 0.05
+    mask = ds.pvalue.data > pcut
     hatchmask = np.zeros(trend.shape)
     hatchmask[mask==0] = np.nan
     #trend[mask] = np.nan
@@ -130,9 +130,10 @@ def plot_hatched_chl_trend(ds=None,year1=1998, ver="4.2"):
     mp.contourf(ds.lon[4::8], ds.lat[4::8], hatchmask[4::8,4::8], 
                 hatches=["XXXXXX"], colors="none")
     sf_kw = dict(dpi=600)#, bbox_inches="tight")
+    pstr = str(pcut).replace(".", "o")
     for ftype in ["png", "pdf", "eps", "svg"]:
         pl.savefig(
-            f"figs/OC-CCI_Chl_trend_v{verstr}_{year1}-2018.{ftype}", **sf_kw)
+            f"figs/OC-CCI_Chl_trend_v{verstr}_{year1}-2018_hatch{pstr}.{ftype}", **sf_kw)
 
 
 def plot_chl_clim(ds=None, ver="4.2"):
