@@ -160,15 +160,13 @@ def plot_chl_clim(ds=None, ver="4.2"):
     create_map("viridis")
     create_map("nipy_spectral")
  
-def hist(ds=None, ver="4.2", cut=20, ylog=True):
+def hist(ds=None, ver="4.2", cut=20, ylog=True, pcut=0.1):
     verstr = str(ver.replace(".",""))
     if ds is None:
-        filename = "ncfiles/chl_1998_v{verstr}_????_????_????_????.nc"
-        ds = xr.open_dataset(filename)
+        filename = f"ncfiles/OC-CCI_1998_2018_v{verstr}_0000_4320_????_????.nc"
+        ds = xr.open_mfdataset(filename)
     trend = ds.trend.values
-    ns = nasa.MODIS(res="4km")
-    area = ns.dx_approx() * ns.dy_approx()
-    area = area/1000/1000
+    area = xr.open_dataset("oc-cci_grid_area.nc")["area"].data
 
     pl.close("all")
     pl.figure(3,(4*2.074021843846364,4))
@@ -177,7 +175,7 @@ def hist(ds=None, ver="4.2", cut=20, ylog=True):
     y,x = np.histogram(trend[mask], np.linspace(-cut,cut, 200), weights=area[mask])
     pl.fill_between((x[1:]+x[:-1])/2,y, alpha=0.20, color="#1f77b4")
 
-    mask = np.isfinite(trend) & (trend>-cut) & (trend<cut)   & (ds.pvalue.values < 0.05)
+    mask = np.isfinite(trend) & (trend>-cut) & (trend<cut)   & (ds.pvalue.values < pcut)
     y,x = np.histogram(trend[mask], np.linspace(-cut,cut, 200), weights=area[mask])
     pl.plot((x[1:]+x[:-1])/2,y, lw=1)    
     pl.fill_between((x[1:]+x[:-1])/2,y, alpha=0.20, color="#1f77b4")
@@ -190,4 +188,5 @@ def hist(ds=None, ver="4.2", cut=20, ylog=True):
     pl.xlabel("Percent change (yr$^{-1}$)", fontsize=14)
     pl.ylabel("Area (km$^3$)", fontsize=14)
     pl.gca().tick_params(labelsize=14)
-    pl.savefig(f"figs/chl_{cut}_trend_hist.pdf", bbox_inches="tight")
+    pstr = str(pcut).replace(".", "o")
+    pl.savefig(f"figs/OC-CCI_Chl_trend_hist_{cut}_{pstr}.pdf", bbox_inches="tight")
